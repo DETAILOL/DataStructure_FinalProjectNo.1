@@ -3,34 +3,69 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+	public static class Sort {
 
+	    public static void sort(ArrayList<Keyword> number, int left, int right) {
+	        if(left < right) { 
+	            int q = partition(number, left, right); 
+	            sort(number, left, q-1); 
+	            sort(number, q+1, right); 
+	        } 
+	    }
+
+	    private static int partition(ArrayList<Keyword> number, int left, int right) {  
+	        int i = left - 1; 
+	        for(int j = left; j < right; j++) { 
+	            if(number.get(j).weight <= number.get(right).weight) { 
+	                i++; 
+	                swap(number, i, j); 
+	            } 
+	        } 
+	        swap(number, i+1, right); 
+	        return i+1; 
+	    } 
+
+	    private static void swap(ArrayList<Keyword> number, int i, int j) {
+	        Keyword t = number.remove(i);
+	        int indexOfJ = number.indexOf(number.get(j));
+	    	number.add(i, number.get(j));
+	        number.add(indexOfJ, t);
+	    }
+	}
 	public static void main(String[] args) throws IOException {
-		WebPage rootPage = new WebPage("http://soslab.nccu.edu.tw/Welcome.html", "Welcome");
-		WebTree tree = new WebTree(rootPage);
+		ArrayList<Keyword> unSorted = new ArrayList<>();
+		//Scanner search = new Scanner(System.in);
 
-		tree.root.addChild(new WebNode(new WebPage("http://soslab.nccu.edu.tw/Welcome.html", "Project")));
-		tree.root.addChild(new WebNode(new WebPage("http://soslab.nccu.edu.tw/Publications.html", "Pulication")));
-		tree.root.children.get(1).addChild(new WebNode(new WebPage("https://scholar.google.com/citations?user=IpxUy-YAAAAJ&hl=en", "Google Scholar")));
-		tree.root.children.get(1).addChild(new WebNode(new WebPage("https://dblp.uni-trier.de/pers/hd/y/Yu:Fang.html", "DBLP")));
-		tree.root.addChild(new WebNode(new WebPage("http://soslab.nccu.edu.tw/Members.html", "Member")));
-		tree.root.addChild(new WebNode(new WebPage("http://soslab.nccu.edu.tw/Courses.html", "Course")));
+		//Call Google Result
+		
+		//CountScore
+		ArrayList<String> urls = new ArrayList<>();
+		urls.add("http://down.ali213.net/pcgame/");
+		urls.add("https://m.wanyx.com/");
+		urls.add("http://pc.duowan.com/xiazai/pojie/");
+		urls.add("http://bbs.3dmgame.com/forum-129-1.html");
+		for (String url : urls) {
+			WebPage rootPage = new WebPage(url, urls.indexOf(url));
+			WebTree tree = new WebTree(rootPage);
 
-		Scanner sc = new Scanner(System.in);
-		while (sc.hasNextLine()) {
-			int numOfKeywords = sc.nextInt();
+			// tree.root.children.get(1).addChild(new WebNode(new WebPage("uri", "name")));
+
 			ArrayList<Keyword> keywords = new ArrayList<>();
-
-			for (int i = 0; i < numOfKeywords; i++) {
-				String name = sc.next();
-				double weight = sc.nextDouble();
-				Keyword k = new Keyword(name, weight);
-				keywords.add(k);
-			}
-
+			keywords.add(new Keyword("game",10));
+			
 			tree.setPostOrderScore(keywords);
+			unSorted.add(new Keyword(url,rootPage.score));
 			tree.printTree();
 		}
-		sc.close();
+		//QuickSort
+		Sort.sort(unSorted, 0, unSorted.size()-1);
+		
+		//Print Result
+		int i = 0;
+		for(Keyword k : unSorted) {
+			System.out.print(i);
+			i++;
+			System.out.println(k.toString());
+		}
 	}
-
 }
