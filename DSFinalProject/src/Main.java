@@ -51,8 +51,9 @@ public class Main {
 			// tree.root.children.get(1).addChild(new WebNode(new WebPage("uri", "name")));
 
 			ArrayList<Keyword> keywords = new ArrayList<>();
-			keywords.add(new Keyword("game",10));
-			
+			keywords.add(new Keyword("game",1));
+			keywords.add(new Keyword("free",3));
+			keywords.add(new Keyword("download",3));
 			tree.setPostOrderScore(keywords);
 			unSorted.add(new Keyword(url,rootPage.score));
 			tree.printTree();
