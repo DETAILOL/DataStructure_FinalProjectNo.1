@@ -33,7 +33,7 @@ public class GeneralGUIBuilding {
 		frame.setResizable(false);
 		frame.setVisible(true);
 		
-		
+		//it's so diffcult.
 	}
 	
 }
