@@ -37,7 +37,6 @@ public class WordCounter {
 		content = content.toUpperCase();
 		keyword = keyword.toUpperCase();
 
-		// to do : indexOF(keyword)
 
 		int T = 0;
 		int index;

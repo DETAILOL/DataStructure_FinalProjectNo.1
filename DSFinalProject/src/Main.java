@@ -26,8 +26,8 @@ public class Main {
 	    } 
 
 	    private static void swap(ArrayList<Keyword> number, int i, int j) {
-	        Keyword t = number.remove(i);
 	        int indexOfJ = number.indexOf(number.get(j));
+	    	Keyword t = number.remove(i);
 	    	number.add(i, number.get(j));
 	        number.add(indexOfJ, t);
 	    }
