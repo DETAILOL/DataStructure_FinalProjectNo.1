@@ -26,10 +26,12 @@ public class Main {
 	    } 
 
 	    private static void swap(ArrayList<Keyword> number, int i, int j) {
-	        int indexOfJ = number.indexOf(number.get(j));
-	    	Keyword t = number.remove(i);
-	    	number.add(i, number.get(j));
-	        number.add(indexOfJ, t);
+	        Keyword tj = number.get(j);
+	    	int indexOfJ = number.indexOf(number.get(j));
+	    	Keyword ti = number.remove(i);
+	    	number.add(i, tj);
+	    	number.remove(indexOfJ);
+	        number.add(indexOfJ, ti);
 	    }
 	}
 	public static void main(String[] args) throws IOException {
