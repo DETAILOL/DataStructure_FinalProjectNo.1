@@ -16,7 +16,7 @@ public class Main {
 	    private static int partition(ArrayList<Keyword> number, int left, int right) {  
 	        int i = left - 1; 
 	        for(int j = left; j < right; j++) { 
-	            if(number.get(j).weight <= number.get(right).weight) { 
+	            if(number.get(j).weight >= number.get(right).weight) { 
 	                i++; 
 	                swap(number, i, j); 
 	            } 
@@ -66,7 +66,7 @@ public class Main {
 		//Print Result
 		int i = 0;
 		for(Keyword k : unSorted) {
-			System.out.print(i);
+			System.out.print(i+1);
 			i++;
 			System.out.println(k.toString());
 		}
