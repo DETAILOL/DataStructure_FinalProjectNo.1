@@ -17,7 +17,7 @@ public class GeneralGUIBuilding {
 		panel.setBackground(Color.BLACK);
 		frame.getContentPane().add(panel);
 		
-		JButton buttom = new JButton("Serch");
+		JButton buttom = new JButton("Search");
 		panel.add(buttom);
 		
 		JTextField textfield = new JTextField();
