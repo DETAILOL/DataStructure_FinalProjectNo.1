@@ -56,13 +56,13 @@ public class TestProject extends HttpServlet {
 			for (Map.Entry<String, String> entry : query.entrySet()) {
 				s[num][0] = entry.getKey();
 				s[num][1] = entry.getValue();
-				
+				/**
 				WebPage rootPage = new WebPage(entry.getValue(),entry.getKey());
 				WebTree tree = new WebTree(rootPage);
 				ArrayList<Keyword> keywords = new ArrayList<>();
 				keywords.add(new Keyword("game", 3));
 				tree.setPostOrderScore(keywords);
-
+				**/
 				num++;
 			}
 

@@ -3,9 +3,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-	
+
 	public static void main(String[] args) throws IOException {
-		ArrayList<Keyword> unSorted = new ArrayList<>();
 		System.out.println("Please enter the keyword you want to search for: ");
 		Scanner search = new Scanner(System.in);
 
@@ -15,6 +14,7 @@ public class Main {
 			GoogleQuery googleQuery = new GoogleQuery(keyword);
 			googleQuery.query();
 		}search.close();
+	}
 		//CountScore
 		
 //		urls.add("http://down.ali213.net/pcgame/");
@@ -34,7 +34,16 @@ public class Main {
 //			tree.setPostOrderScore(keywords);
 //			unSorted.add(new Keyword(url,rootPage.score));
 //			tree.printTree();
-		}
+		
+		//QuickSort
+//		Sort.sort(unSorted, 0, unSorted.size()-1);
+//		
+//		//Print Result
+//		int i = 0;
+//		for(Keyword k : unSorted) {
+//			System.out.print(i+1);
+//			i++;
+//			System.out.println(k.toString());
 //		}
 //	}
 }
