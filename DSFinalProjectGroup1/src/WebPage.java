@@ -4,11 +4,11 @@ import java.util.ArrayList;
 public class WebPage {
 	
 	public String url;
-	public int name;
+	public String name;
 	public WordCounter counter;
 	public double score;
 	
-	public WebPage(String url, int name) {
+	public WebPage(String url, String name) {
 		this.url = url;
 		this.name = name;
 		this.counter = new WordCounter(url);
