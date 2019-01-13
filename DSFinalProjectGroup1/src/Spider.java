@@ -12,6 +12,8 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,7 +23,7 @@ public class Spider {
 	public String searchKeyword;
 	public String url;
 	public static String content;
-	public static String results = "https://www.google.com.tw/search?source=hp&ei=4hY7XNWUEYuA8wXZu6_ABQ&q=game&btnK=Google+%E6%90%9C%E5%B0%8B&oq=game&gs_l=psy-ab.3.0.35i39j0i10j0i131l2j0l2j0i131j0l3.869.1385..1482...0.0..0.135.391.3j1......0....1..gws-wiz.....0..0i67.coh6o6nfDBA"; 
+	public static String results = "https://www.google.com.tw/url?q=https://game.ioxapp.com/&sa=U&ved=0ahUKEwiQttqk5-rfAhWJu7wKHaZFA4MQFggTMAA&usg=AOvVaw0Syf-cVcEptx5I73UkLi-A"; 
 	public static int num = -1, sum = 0;
 	/**
 	 * 定义四个文件类（链接存储，图片储存，文件存储，错误链接存储）
@@ -171,7 +173,7 @@ public class Spider {
 		int thisNum = 0;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
-			while ((thisLine = reader.readLine()) != null) {
+			while((thisLine = reader.readLine()) != null){
 				if (num == thisNum) {
 					return thisLine;
 				}
@@ -203,22 +205,26 @@ public class Spider {
 		return count;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		aLinkFile = new File("C:/Users/user/Desktop/workplace for java ee/ALinks.txt");
 		imgLinkFile = new File("C:/Users/user/Desktop/workplace for java ee/ImgLinks.txt");
 		docLinkFile = new File("C:/Users/user/Desktop/workplace for java ee/DocLinks.txt");
 		errorLinkFile = new File("C:/Users/user/Desktop/workplace for java ee/ErrorLinks.txt");
-		// 用数组存储四个文件对象，方便进行相同操作
-		File[] files = new File[] { aLinkFile, imgLinkFile, docLinkFile, errorLinkFile };
-		try {
-			for (File file : files) {
-				if (file.exists()) // 如果文件存在
-					file.delete(); // 则先删除
-				file.createNewFile(); // 再创建
+		
+		
+			File[] files = new File[] { aLinkFile, imgLinkFile, docLinkFile, errorLinkFile };
+			try {
+				for (File file : files) {
+					if (file.exists()) // 如果文件存在
+						file.delete(); // 则先删除
+					file.createNewFile(); // 再创建
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			
+	
+		
 		long startTime = System.currentTimeMillis(); // 获取开始时间
 		Spider.getAllLinks(results); // 开始爬取目标内容
 		System.out.println("" + "——————————————————爬取结束——————————————————" + "\n目标网址：" + results + "\n链接总数：" + sum + "条"
