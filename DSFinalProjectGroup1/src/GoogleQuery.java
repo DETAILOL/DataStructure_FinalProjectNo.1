@@ -66,11 +66,11 @@ public class GoogleQuery {
 		Document document = Jsoup.parse(this.content);
 		Elements lis = document.select("div.g");
 
-		// ArrayList<Keyword> unSorted = new ArrayList<>();
-		ArrayList<WebScore> rootUrls = new ArrayList<>();
-		ArrayList<Keyword> unSorted = new ArrayList<>();
 
-		for (int i = 0; i < 3; i++) {
+		ArrayList<WebScore> rootUrls = new ArrayList<>();
+		ArrayList<WebTree> unSorted = new ArrayList<>();
+
+		for (int i = 0; i <= 4; i++) {
 			try {
 				Element h3 = lis.get(i).select("h3.r").get(0);
 				String title = h3.text();
@@ -80,10 +80,10 @@ public class GoogleQuery {
 				rootUrls.add(new WebScore(title,citeUrl,0));
 				System.out.println(title + " " + citeUrl);
 				webTrees.add(new WebTree(new WebPage(citeUrl, title)));
-				getAllLinks(citeUrl);
+				getAllLinks(citeUrl,i);
 				retVal.put(title, citeUrl);
 			} catch (IndexOutOfBoundsException e) {
-				// Do nothing
+				e.printStackTrace();
 			}
 		}
 		for (WebTree tree : webTrees) {
@@ -93,20 +93,20 @@ public class GoogleQuery {
 			keywords.add(new Keyword("free", 3));
 			keywords.add(new Keyword("download", 3));
 			tree.setPostOrderScore(keywords);
-//			unSorted.add(new Keyword(url, tree.score));
+			unSorted.add(tree);
 			tree.printTree();
 		}
-		// Sort.sort(unSorted, 0, unSorted.size()-1);
-		// int i = 0;
-		// for(Keyword k : unSorted) {
-		// System.out.print(i+1);
-		// i++;
-		// System.out.println(k.toString());
-		// }
+		 Sort.sort(unSorted, 0, unSorted.size()-1);
+		 int i = 0;
+		 for(WebTree k : unSorted) {
+		 System.out.print(i+1);
+		 i++;
+		 System.out.println(k.toString());
+		 }
 		return retVal;
 	}
 
-	public String getAllLinks(String path) {
+	public String getAllLinks(String path, int i) {
 		Boolean found = false;
 		Document doc = null;
 		try {
@@ -118,7 +118,7 @@ public class GoogleQuery {
 			writeTxtFile(errorLinkFile, path + "\r\n"); // 写入错误链接收集文件
 			num++;
 			if (sum > num) { // 如果文件总数（sum）大于num(当前坐标)则继续遍历
-				getAllLinks(getFileLine(aLinkFile, num));
+//				getAllLinks(getFileLine(aLinkFile, num));
 			}
 			return null;
 		}
@@ -137,7 +137,7 @@ public class GoogleQuery {
 				url = path + url;
 			}
 
-			// 如果文件中没有这个链接，而且链接中不包含javascript:则继续(因为有的是用js语法跳转)
+//			// 如果文件中没有这个链接，而且链接中不包含javascript:则继续(因为有的是用js语法跳转)
 			if (!readTxtFile(aLinkFile).contains(url) && !url.contains("javascript") && count < 3) {
 				// 路径必须包含网页主链接--->防止爬入别的网站
 				if (url.contains(path)) {
@@ -149,13 +149,14 @@ public class GoogleQuery {
 					} else {
 						// 将链接写入文件
 						writeTxtFile(aLinkFile, url + "\r\n");
-						
-						webTrees.get(webTrees.indexOf(path)).root.addChild(new WebNode(new WebPage(url)));
+//						System.out.println(webTrees.indexOf(count));
+					
+						webTrees.get(i).root.addChild(new WebNode(new WebPage(url)));
 						sum++; // 链接总数+1
 						count++;
 						found = true;
 					}
-					System.out.println("\t" + element.text() + "：\t" + url);
+					System.out.println("這式子旺業"+"\t" + element.text() + "：\t" + url);
 				}
 			}
 		}
@@ -243,7 +244,7 @@ public class GoogleQuery {
 
 	public static class Sort {
 
-		public static void sort(ArrayList<Keyword> number, int left, int right) {
+		public static void sort(ArrayList<WebTree> number, int left, int right) {
 			if (left < right) {
 				int q = partition(number, left, right);
 				sort(number, left, q - 1);
@@ -251,10 +252,10 @@ public class GoogleQuery {
 			}
 		}
 
-		private static int partition(ArrayList<Keyword> number, int left, int right) {
+		private static int partition(ArrayList<WebTree> number, int left, int right) {
 			int i = left - 1;
 			for (int j = left; j < right; j++) {
-				if (number.get(j).weight >= number.get(right).weight) {
+				if (number.get(j).treescore >= number.get(right).treescore) {
 					i++;
 					swap(number, i, j);
 				}
@@ -263,10 +264,10 @@ public class GoogleQuery {
 			return i + 1;
 		}
 
-		private static void swap(ArrayList<Keyword> number, int i, int j) {
-			Keyword tj = number.get(j);
+		private static void swap(ArrayList<WebTree> number, int i, int j) {
+			WebTree tj = number.get(j);
 			int indexOfJ = number.indexOf(number.get(j));
-			Keyword ti = number.remove(i);
+			WebTree ti = number.remove(i);
 			number.add(i, tj);
 			number.remove(indexOfJ);
 			number.add(indexOfJ, ti);

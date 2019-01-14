@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class WebTree {
 	public WebNode root;
+	public double treescore;
 	private StringBuilder sb = new StringBuilder();
 	
 	public WebTree(WebPage rootPage) {

@@ -13,6 +13,12 @@ public class WebPage {
 		this.name = name;
 		this.counter = new WordCounter(url);
 	}
+	public WebPage(String url, String name, double score) {
+		this.url = url;
+		this.name = name;
+		this.score = score;
+		this.counter = new WordCounter(url);
+	}
 	public WebPage(String url) {
 		this.url = url;
 		this.counter = new WordCounter(url);
