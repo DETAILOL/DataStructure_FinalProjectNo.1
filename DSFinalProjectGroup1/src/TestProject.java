@@ -36,35 +36,36 @@ public class TestProject extends HttpServlet {
 			return;
 		} else {
 			GoogleQuery google = new GoogleQuery(request.getParameter("keyword"));
-			HashMap<String, String> query = google.query();
-/**
-			class WebData {
-				public String keyword;
-				public String uri;
-				public double score;
-
-				public void Webdata(String keyword, String uri, double score) {
-					this.keyword = keyword;
-					this.uri = uri;
-					this.score = score;
-				}
-			}
-**/
-			String[][] s = new String[query.size()][2];
-			request.setAttribute("query", s);
-			int num = 0;
-			for (Map.Entry<String, String> entry : query.entrySet()) {
-				s[num][0] = entry.getKey();
-				s[num][1] = entry.getValue();
-				/**
-				WebPage rootPage = new WebPage(entry.getValue(),entry.getKey());
-				WebTree tree = new WebTree(rootPage);
-				ArrayList<Keyword> keywords = new ArrayList<>();
-				keywords.add(new Keyword("game", 3));
-				tree.setPostOrderScore(keywords);
-				**/
-				num++;
-			}
+			ArrayList<WebTree> query = google.query();
+			
+			query.clear();
+//			class WebData {
+//				public String keyword;
+//				public String uri;
+//				public double score;
+//
+//				public void Webdata(String keyword, String uri, double score) {
+//					this.keyword = keyword;
+//					this.uri = uri;
+//					this.score = score;
+//				}
+//			}
+//
+//			String[][] s = new String[query.size()][2];
+//			request.setAttribute("query", s);
+//			int num = 0;
+//			for (Map.Entry<String, String> entry : query.entrySet()) {
+//				s[num][0] = entry.getKey();
+//				s[num][1] = entry.getValue();
+//
+//				WebPage rootPage = new WebPage(entry.getValue(), entry.getKey());
+//				WebTree tree = new WebTree(rootPage);
+//				ArrayList<Keyword> keywords = new ArrayList<>();
+//				keywords.add(new Keyword("game", 3));
+//				tree.setPostOrderScore(keywords);
+//
+//				num++;
+//			}
 
 			request.getRequestDispatcher("googleitem.jsp").forward(request, response);
 		}

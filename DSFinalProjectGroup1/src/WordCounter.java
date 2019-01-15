@@ -22,7 +22,8 @@ public class WordCounter {
 		String retVal = " ";
 		String line = null;
 
-		while ((line = br.readLine()) != null) {
+		while ((line = br.readLine()) != null) 
+		{
 			retVal = retVal + line + "\n";
 		}
 
