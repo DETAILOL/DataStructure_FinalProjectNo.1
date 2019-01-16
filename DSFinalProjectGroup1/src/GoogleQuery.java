@@ -1,13 +1,4 @@
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -15,26 +6,33 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class GoogleQuery {
 
-	private String url;
-	private static File aLinkFile;
 	public ArrayList<WebTree> googleResult;
+	public String searchKeyword;
+	public static File aLinkFile;
+	public String url;
+	public String content;
+	public static String results = "";
 
 	public GoogleQuery(String searchKeyword) {
+		this.searchKeyword = searchKeyword;
 		this.url = "https://www.google.com.tw/search?q=" + searchKeyword + "&oe=utf8&num=100";
 	}
 
 	private String fetchContent() throws IOException {
 
-		URLConnection connection = new URL(url).openConnection();
+		URL urlStr = new URL(url);
+		URLConnection connection = urlStr.openConnection();
 		connection.setRequestProperty("User-Agent",
 				"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 		connection.connect();
 		InputStream inputStream = connection.getInputStream();
+
 		InputStreamReader inReader = new InputStreamReader(inputStream, "UTF8");
 		BufferedReader bf = new BufferedReader(inReader);
 
@@ -49,43 +47,51 @@ public class GoogleQuery {
 	public ArrayList<WebTree> query() throws IOException {
 
 		googleResult = new ArrayList<>();
-		aLinkFile = new File("C:\\Users\\Public\\Documents\\ALinks.txt");
+		aLinkFile = new File("C:/Users/user/Desktop/workplace for java ee/ALinks.txt");
+
 		try {
 			if (aLinkFile.exists())
 				aLinkFile.delete();
 			aLinkFile.createNewFile();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// if (this.content == null)
-		// this.content = fetchContent();
-		Elements lis = Jsoup.parse(fetchContent()).select("div.g");
-		ArrayList<WebScore> rootUrls = new ArrayList<>();
-		for (int i = 0; i < 4; i++) {
+
+		if (this.content == null) {
+			this.content = fetchContent();
+		}
+		Document document = Jsoup.parse(this.content);
+		Elements lis = document.select("div.g");
+
+
+		for (int i = 0; i <= 8; i++) {
 			try {
 				String title = lis.get(i).select("h3.r").get(0).text();
 				Element cite = lis.get(i).getElementsByTag("a").first();
 				String citeUrl = "https://www.google.com.tw" + cite.attr("href");
 				citeUrl = URLDecoder.decode(citeUrl.substring(citeUrl.indexOf('=') + 1, citeUrl.indexOf('&')), "UTF-8");
-				// handle HTTP Error
-				URL testurl = new URL(citeUrl);
-				HttpURLConnection urlconnection = (HttpURLConnection) testurl.openConnection();
-				urlconnection.connect();
 
-				int statusCode = urlconnection.getResponseCode();
+//				 handle HTTP Error
+				 URL testurl = new URL(citeUrl);
+				 HttpURLConnection urlconnection = (HttpURLConnection)
+				 testurl.openConnection();
+				 urlconnection.connect();
+				
+				 int statusCode = urlconnection.getResponseCode();
+				
+				 if (statusCode == HttpURLConnection.HTTP_UNAVAILABLE) {
+				 System.out.println("Error, URL is unavaliable");
+				 continue;
+				 } else if (statusCode == HttpURLConnection.HTTP_NOT_FOUND) {
+				 System.out.println("Error, URL not found");
+				 continue;
+				 } else if (statusCode == HttpURLConnection.HTTP_FORBIDDEN) {
+				 System.out.print("Error, forbidden URL");
+				 continue;
+				 }
 
-				if (statusCode == HttpURLConnection.HTTP_UNAVAILABLE) {
-					System.out.println("Error, URL is unavaliable");
-					continue;
-				} else if (statusCode == HttpURLConnection.HTTP_NOT_FOUND) {
-					System.out.println("Error, URL not found");
-					continue;
-				} else if (statusCode == HttpURLConnection.HTTP_FORBIDDEN) {
-					System.out.print("Error, forbidden URL");
-					continue;
-				}
-				rootUrls.add(new WebScore(title, citeUrl, 0));
-				System.out.println(title + " 網址(" + citeUrl + ")");
+//				System.out.println(title + " 網址(" + citeUrl + ")");
 				googleResult.add(new WebTree(new WebPage(citeUrl, title)));
 				getAllLinks(citeUrl, i);
 			} catch (IndexOutOfBoundsException e) {
@@ -95,17 +101,21 @@ public class GoogleQuery {
 		return googleResult;
 	}
 
-	private void getAllLinks(String path, int i) throws IOException {
-
+	public void getAllLinks(String path, int i) throws IOException {
+	 
+		url = path;
+		
 		Elements aLinks = Jsoup.parse(fetchContent()).select("a[href]");
-		System.out.println("開始連結" + path);
+//		System.out.println("開始連結" + path);
 
 		int count = 0;
 		for (Element aLink : aLinks) {
 			String childUrl = aLink.attr("href");
 			if (!childUrl.contains("http://") && !childUrl.contains("https://"))
-				childUrl = path + childUrl;
+				childUrl = "https:" + childUrl;
+
 			if (!readTxtFile(aLinkFile).contains(childUrl) && !childUrl.contains("javascript") && count < 3) {
+				
 				if (childUrl.contains(path)) {
 					if (!childUrl.contains(".doc") && !childUrl.contains(".exl") && !childUrl.contains(".exe")
 							&& !childUrl.contains(".apk") && !childUrl.contains(".mp3") && !childUrl.contains(".mp4")) {
@@ -113,15 +123,32 @@ public class GoogleQuery {
 						googleResult.get(i).root.addChild(new WebNode(new WebPage(childUrl)));
 						count++;
 					}
-					System.out.println("\t" + aLink.text() + ": \t" + childUrl);
+//					System.out.println("\t" + aLink.text() + ": \t" + childUrl);
 				}
 			}
 		}
 	}
 
-	private static String readTxtFile(File file) {
-		String result = "";
-		String thisLine = "";
+	// 同时抓取该页面图片链接
+	// for (Element element : imgLinks) {
+	// String srcStr = element.attr("src");
+	// if (!srcStr.contains("http://") && !srcStr.contains("https://")) {// 没有这两个头
+	// srcStr = Spider.results + srcStr;
+	// }
+	// if (!readTxtFile(imgLinkFile).contains(srcStr)) {
+	// // 将图片链接写进文件中
+	// writeTxtFile(imgLinkFile, srcStr + "\r\n");
+	// }
+	// }
+	// num++;
+	// if (sum > num) {
+	// getAllLinks(getFileLine(aLinkFile, num));
+	// }
+	// }
+
+	public static String readTxtFile(File file) {
+		String result = ""; // 读取結果
+		String thisLine = ""; // 每次读取的行
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			try {
@@ -139,7 +166,7 @@ public class GoogleQuery {
 		return result;
 	}
 
-	private static void writeTxtFile(File file, String urlStr) {
+	public static void writeTxtFile(File file, String urlStr) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
 			writer.write(urlStr);
@@ -149,34 +176,35 @@ public class GoogleQuery {
 		}
 	}
 
-	public static class Sort {
-		public static void sort(ArrayList<WebTree> number, int left, int right) {
-			if (left < right) {
-				int q = partition(number, left, right);
-				sort(number, left, q - 1);
-				sort(number, q + 1, right);
-			}
-		}
-
-		private static int partition(ArrayList<WebTree> number, int left, int right) {
-			int i = left - 1;
-			for (int j = left; j < right; j++) {
-				if (number.get(j).treescore >= number.get(right).treescore) {
-					i++;
-					swap(number, i, j);
+	public static String getFileLine(File file, int num) {
+		String thisLine = "";
+		int thisNum = 0;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			while ((thisLine = reader.readLine()) != null) {
+				if (num == thisNum) {
+					return thisLine;
 				}
+				thisNum++;
 			}
-			swap(number, i + 1, right);
-			return i + 1;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		private static void swap(ArrayList<WebTree> number, int i, int j) {
-			WebTree tj = number.get(j);
-			int indexOfJ = number.indexOf(number.get(j));
-			WebTree ti = number.remove(i);
-			number.add(i, tj);
-			number.remove(indexOfJ);
-			number.add(indexOfJ, ti);
-		}
+		return "";
 	}
+
+	public static int getFileCount(File file) {
+		int count = 0;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			while (reader.readLine() != null) { // 遍历文件行
+				count++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+
+	
 }
