@@ -18,24 +18,18 @@ public class Main {
 
 		String keyword = search.next();
 		ArrayList<WebTree> googleResult = new GoogleQuery(keyword).query();
-		HashMap<String, String> sorted = sortGoogleQuery.sort(googleResult);
-		
-		String[][] s = new String[sorted.size()][2];
-		int num = 0;
-		for(Entry<String, String> entry : sorted.entrySet()) {
-		    String key = entry.getKey();
-		    String value = entry.getValue();
-		    s[num][0] = key;
-		    s[num][1] = value;
-		    num++;
+		ArrayList<WebTree> sorted = sortGoogleQuery.sort(googleResult);
+		for (WebTree webTree : sorted) {
+			System.out.println(webTree.treename+" "+webTree.treescore);
+			System.out.println(webTree.treeurl);
 		}
-		int i = 1;
-		for(Entry<String, String> entry : sorted.entrySet()) {
-			System.out.print(i + " ");
-			i++;
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue());
-		}
+//		int i = 1;
+//		for(Entry<String, String> entry : sorted.entrySet()) {
+//		    System.out.print(i + " ");
+//			i++;
+//			System.out.println(entry.getKey());
+//			System.out.println(entry.getValue());
+//		}
 		search.close();
 		googleResult.clear();
 	}

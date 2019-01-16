@@ -36,8 +36,11 @@ public class TestProject extends HttpServlet {
 		}
 		// Call Google
 		ArrayList<WebTree> query = new GoogleQuery(request.getParameter("keyword")).query();
-		HashMap<String, String> sorted = sortGoogleQuery.sort(query);
-
+		
+		HashMap<String, String> sorted = new HashMap<String, String>();
+		for (WebTree webTree : sortGoogleQuery.sort(query)) {
+			sorted.put(webTree.treename, webTree.treeurl);
+		}
 		String[][] s = new String[sorted.size()][2];
 		request.setAttribute("query", s);
 		int num = 0;

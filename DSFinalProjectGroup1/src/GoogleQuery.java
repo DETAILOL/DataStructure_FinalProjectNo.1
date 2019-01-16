@@ -103,7 +103,7 @@ public class GoogleQuery {
 		Elements aLinks = Jsoup.parse(fetchContent()).select("a[href]");
 		System.out.println("開始連結" + path);
 
-		int count = 0;
+		int count = 1;
 		
 		try {
 			for (Element aLink : aLinks) {
@@ -112,12 +112,13 @@ public class GoogleQuery {
 				if (!childUrl.contains("http://") && !childUrl.contains("https://"))
 					childUrl = "https:" + childUrl;
 
-				if (!readTxtFile(aLinkFile).contains(childUrl) && !childUrl.contains("javascript") && count < 3) {
+				if (!readTxtFile(aLinkFile).contains(childUrl) && !childUrl.contains("javascript") && count < 4) {
 					
 					if (childUrl.contains(path)) {
 						if (!childUrl.contains(".doc") && !childUrl.contains(".exl") && !childUrl.contains(".exe")
 								&& !childUrl.contains(".apk") && !childUrl.contains(".mp3") && !childUrl.contains(".mp4")) {
 							writeTxtFile(aLinkFile, childUrl + "\r\n");
+							System.out.println("\t"+count+". "+childUrl);
 							googleResult.get(i).root.addChild(new WebNode(new WebPage(childUrl)));
 							count++;
 						}

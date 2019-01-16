@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class sortGoogleQuery {
 
-	public static HashMap<String, String> sort(ArrayList<WebTree> webTrees) throws IOException {
+	public static ArrayList<WebTree> sort(ArrayList<WebTree> webTrees) throws IOException {
 		
 		HashMap<String, String> retVal = new HashMap<String, String>();
 
@@ -24,15 +24,12 @@ public class sortGoogleQuery {
 			keywords.add(new Keyword("tits", -1));
 			unSorted.add(result);
 			result.setPostOrderScore(keywords);
-			//result.printTree();
+			result.printTree();
 			
 		}
 		sort(unSorted, 0, unSorted.size() - 1);
 		
-		for (WebTree webTree : unSorted) {
-			retVal.put(webTree.treename, webTree.treeurl);
-		}
-		return retVal;
+		return unSorted;
 	}
 
 	public static void sort(ArrayList<WebTree> googleResult, int left, int right) {
