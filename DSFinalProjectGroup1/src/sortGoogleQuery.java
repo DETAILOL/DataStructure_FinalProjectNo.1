@@ -6,8 +6,6 @@ public class sortGoogleQuery {
 
 	public static ArrayList<WebTree> sort(ArrayList<WebTree> webTrees) throws IOException {
 		
-		HashMap<String, String> retVal = new HashMap<String, String>();
-
 		//Tree Construction
 		ArrayList<WebTree> unSorted = new ArrayList<>();
 		
@@ -15,10 +13,11 @@ public class sortGoogleQuery {
 			
 			ArrayList<Keyword> keywords = new ArrayList<>();
 			keywords.add(new Keyword("game", 2));
-			keywords.add(new Keyword("free", 2));
+			keywords.add(new Keyword("free", 5));
 			keywords.add(new Keyword("download", 5));
+			keywords.add(new Keyword("cracked", 6));
 
-			keywords.add(new Keyword("porn", -4));
+			keywords.add(new Keyword("porn", -10));
 			keywords.add(new Keyword("sex", -1));
 			keywords.add(new Keyword("nude", -1));
 			keywords.add(new Keyword("tits", -1));

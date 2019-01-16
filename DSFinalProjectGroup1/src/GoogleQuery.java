@@ -67,9 +67,11 @@ public class GoogleQuery {
 				 System.out.print("Error, forbidden URL");
 				 continue;
 				 }
-				 
+				
 				googleResult.add(new WebTree(new WebPage(citeUrl, title)));
+				//Find Children
 				getAllLinks(citeUrl, i);
+				
 			} catch (IndexOutOfBoundsException e) {
 			}
 		}
@@ -104,7 +106,6 @@ public class GoogleQuery {
 		System.out.println("開始連結" + path);
 
 		int count = 1;
-		
 		try {
 			for (Element aLink : aLinks) {
 				//String childTitle = aLinks.get(i).select("h3.r").get(0).text();

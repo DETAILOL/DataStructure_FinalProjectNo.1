@@ -34,10 +34,13 @@ public class TestProject extends HttpServlet {
 			request.getRequestDispatcher("Search.jsp").forward(request, response);
 			return;
 		}
-		// Call Google
+		
+		//Call Google Search Result
 		ArrayList<WebTree> query = new GoogleQuery(request.getParameter("keyword")).query();
 		
+		//Calculate Score and Do the Sorting thing
 		HashMap<String, String> sorted = new HashMap<String, String>();
+		
 		for (WebTree webTree : sortGoogleQuery.sort(query)) {
 			sorted.put(webTree.treename, webTree.treeurl);
 		}

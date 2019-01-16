@@ -19,17 +19,12 @@ public class Main {
 		String keyword = search.next();
 		ArrayList<WebTree> googleResult = new GoogleQuery(keyword).query();
 		ArrayList<WebTree> sorted = sortGoogleQuery.sort(googleResult);
+		
 		for (WebTree webTree : sorted) {
 			System.out.println(webTree.treename+" "+webTree.treescore);
 			System.out.println(webTree.treeurl);
 		}
-//		int i = 1;
-//		for(Entry<String, String> entry : sorted.entrySet()) {
-//		    System.out.print(i + " ");
-//			i++;
-//			System.out.println(entry.getKey());
-//			System.out.println(entry.getValue());
-//		}
+		
 		search.close();
 		googleResult.clear();
 	}
