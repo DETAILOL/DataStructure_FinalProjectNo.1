@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.util.*;
 import javax.servlet.ServletException;
@@ -39,7 +38,7 @@ public class TestProject extends HttpServlet {
 		ArrayList<WebTree> query = new GoogleQuery(request.getParameter("keyword")).query();
 		
 		//Calculate Score and Do the Sorting thing
-		HashMap<String, String> sorted = new HashMap<String, String>();
+		LinkedHashMap<String, String> sorted = new LinkedHashMap<String, String>();
 		
 		for (WebTree webTree : sortGoogleQuery.sort(query)) {
 			sorted.put(webTree.treename, webTree.treeurl);

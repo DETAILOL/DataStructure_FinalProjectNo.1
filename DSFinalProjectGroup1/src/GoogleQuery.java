@@ -47,7 +47,7 @@ public class GoogleQuery {
 				String title = lis.get(i).select("h3.r").get(0).text();
 				Element cite = lis.get(i).getElementsByTag("a").first();
 				String citeUrl = "https://www.google.com.tw" + cite.attr("href");
-				citeUrl = URLDecoder.decode(citeUrl.substring(citeUrl.indexOf('=') + 1, citeUrl.indexOf('&')), "UTF-8");
+//				citeUrl = URLDecoder.decode(citeUrl.substring(citeUrl.indexOf('=') + 1, citeUrl.indexOf('&')), "UTF-8");
 
 				 //handle HTTP Error
 				 URL testurl = new URL(citeUrl);
@@ -72,7 +72,8 @@ public class GoogleQuery {
 				//Find Children
 				getAllLinks(citeUrl, i);
 				
-			} catch (IndexOutOfBoundsException e) {
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return googleResult;
@@ -108,7 +109,7 @@ public class GoogleQuery {
 		int count = 1;
 		try {
 			for (Element aLink : aLinks) {
-				//String childTitle = aLinks.get(i).select("h3.r").get(0).text();
+			
 				String childUrl = aLink.attr("href");
 				if (!childUrl.contains("http://") && !childUrl.contains("https://"))
 					childUrl = "https:" + childUrl;
@@ -131,26 +132,9 @@ public class GoogleQuery {
 		
 	}
 
-	// 同时抓取该页面图片链接
-	// for (Element element : imgLinks) {
-	// String srcStr = element.attr("src");
-	// if (!srcStr.contains("http://") && !srcStr.contains("https://")) {// 没有这两个头
-	// srcStr = Spider.results + srcStr;
-	// }
-	// if (!readTxtFile(imgLinkFile).contains(srcStr)) {
-	// // 将图片链接写进文件中
-	// writeTxtFile(imgLinkFile, srcStr + "\r\n");
-	// }
-	// }
-	// num++;
-	// if (sum > num) {
-	// getAllLinks(getFileLine(aLinkFile, num));
-	// }
-	// }
-
 	private static String readTxtFile(File file) {
-		String result = ""; // 读取結果
-		String thisLine = ""; // 每次读取的行
+		String result = ""; 
+		String thisLine = ""; 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			try {
@@ -177,34 +161,4 @@ public class GoogleQuery {
 			e.printStackTrace();
 		}
 	}
-
-//	private static String getFileLine(File file, int num) {
-//		String thisLine = "";
-//		int thisNum = 0;
-//		try {
-//			BufferedReader reader = new BufferedReader(new FileReader(file));
-//			while ((thisLine = reader.readLine()) != null) {
-//				if (num == thisNum) {
-//					return thisLine;
-//				}
-//				thisNum++;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return "";
-//	}
-//
-//	private static int getFileCount(File file) {
-//		int count = 0;
-//		try {
-//			BufferedReader reader = new BufferedReader(new FileReader(file));
-//			while (reader.readLine() != null) { // 遍历文件行
-//				count++;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return count;
-//	}
 }
